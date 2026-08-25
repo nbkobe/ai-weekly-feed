@@ -20,28 +20,31 @@ jobs:
             echo "工具已存在，跳过更新"
             exit 0
           fi
-
-          node -e "
-            const fs = require('fs');
-            let html = fs.readFileSync('index.html', 'utf8');
-
-            const tools = \`
-              { name:\\"Krea AI\\", desc:\\"实时AI图像生成与编辑\\", url:\\"https://www.krea.ai\\", icon:\\"🎨\\", tags:[\\"en\\"], cat:\\"paint\\" },
-              { name:\\"NotebookLM\\", desc:\\"Google AI笔记研究助手\\", url:\\"https://notebooklm.google\\", icon:\\"📝\\", tags:[\\"en\\",\\"free\\"], cat:\\"search\\" },
-              { name:\\"Suno AI\\", desc:\\"AI音乐生成\\", url:\\"https://suno.com\\", icon:\\"🎵\\", tags:[\\"en\\"], cat:\\"audio\\" },
-              { name:\\"Perplexity AI\\", desc:\\"AI搜索引擎附引用\\", url:\\"https://www.perplexity.ai\\", icon:\\"🔍\\", tags:[\\"en\\",\\"free\\"], cat:\\"search\\" },
-              { name:\\"Runway Gen-3\\", desc:\\"AI文字转高质量视频\\", url:\\"https://runwayml.com\\", icon:\\"🎬\\", tags:[\\"en\\"], cat:\\"video\\" },
-              { name:\\"Cursor IDE\\", desc:\\"AI代码编辑器\\", url:\\"https://cursor.com\\", icon:\\"💻\\", tags:[\\"en\\"], cat:\\"code\\" },
-              { name:\\"Gamma\\", desc:\\"AI一键生成PPT\\", url:\\"https://gamma.app\\", icon:\\"📊\\", tags:[\\"en\\",\\"free\\"], cat:\\"office\\" },
-              { name:\\"ElevenLabs\\", desc:\\"超逼真AI语音合成\\", url:\\"https://elevenlabs.io\\", icon:\\"🗣️\\", tags:[\\"en\\"], cat:\\"audio\\" },
-              { name:\\"Ideogram\\", desc:\\"AI图像生成\\", url:\\"https://ideogram.ai\\", icon:\\"🖼️\\", tags:[\\"en\\",\\"free\\"], cat:\\"paint\\" },
-              { name:\\"Consensus\\", desc:\\"AI学术搜索引擎\\", url:\\"https://consensus.app\\", icon:\\"🎓\\", tags:[\\"en\\"], cat:\\"search\\" }
-            \`.trim();
-
-            html = html.replace(/\];\s*\n\s*const CATEGORIES/, tools + ',\n];\n\nconst CATEGORIES');
-            fs.writeFileSync('index.html', html);
-            console.log('✅ 已写入 index.html');
-          "
+          
+          cat > update-tools.js << 'EOF'
+          const fs = require('fs');
+          let html = fs.readFileSync('index.html', 'utf8');
+          
+          const newTools = `
+            { name: "Krea AI", desc: "实时AI图像生成与编辑", url: "https://www.krea.ai", icon: "🎨", tags: ["en"], cat: "paint" },
+            { name: "NotebookLM", desc: "Google AI笔记研究助手", url: "https://notebooklm.google", icon: "📝", tags: ["en", "free"], cat: "search" },
+            { name: "Suno AI", desc: "AI音乐生成", url: "https://suno.com", icon: "🎵", tags: ["en"], cat: "audio" },
+            { name: "Perplexity AI", desc: "AI搜索引擎附引用", url: "https://www.perplexity.ai", icon: "🔍", tags: ["en", "free"], cat: "search" },
+            { name: "Runway Gen-3", desc: "AI文字转高质量视频", url: "https://runwayml.com", icon: "🎬", tags: ["en"], cat: "video" },
+            { name: "Cursor IDE", desc: "AI代码编辑器", url: "https://cursor.com", icon: "💻", tags: ["en"], cat: "code" },
+            { name: "Gamma", desc: "AI一键生成PPT", url: "https://gamma.app", icon: "📊", tags: ["en", "free"], cat: "office" },
+            { name: "ElevenLabs", desc: "超逼真AI语音合成", url: "https://elevenlabs.io", icon: "🗣️", tags: ["en"], cat: "audio" },
+            { name: "Ideogram", desc: "AI图像生成", url: "https://ideogram.ai", icon: "🖼️", tags: ["en", "free"], cat: "paint" },
+            { name: "Consensus", desc: "AI学术搜索引擎", url: "https://consensus.app", icon: "🎓", tags: ["en"], cat: "search" }
+          `.trim();
+          
+          html = html.replace(/\];\s*\n\s*const CATEGORIES/, newTools + ',\n];\n\nconst CATEGORIES');
+          fs.writeFileSync('index.html', html);
+          console.log('✅ 已写入 index.html');
+          EOF
+          
+          node update-tools.js
+          rm update-tools.js
 
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
