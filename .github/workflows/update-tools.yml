@@ -1,3 +1,19 @@
+name: Auto Update AI Tools
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Update tools
         run: |
           if grep -q "Krea AI" index.html; then
@@ -5,7 +21,6 @@
             exit 0
           fi
 
-          # 用 node 来操作文件，比 sed 可靠得多
           node -e "
             const fs = require('fs');
             let html = fs.readFileSync('index.html', 'utf8');
@@ -23,7 +38,6 @@
               { name:\\"Consensus\\", desc:\\"AI学术搜索引擎\\", url:\\"https://consensus.app\\", icon:\\"🎓\\", tags:[\\"en\\"], cat:\\"search\\" }
             \`.trim();
 
-            // 找到 ]; 前面插入
             html = html.replace(/\];\s*\n\s*const CATEGORIES/, tools + ',\n];\n\nconst CATEGORIES');
             fs.writeFileSync('index.html', html);
             console.log('✅ 已写入 index.html');
