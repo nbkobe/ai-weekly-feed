@@ -1,45 +1,34 @@
-name: Auto Update AI Tools
-
-on:
-  schedule:
-    - cron: '0 2 * * *'
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
-jobs:
-  update:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
       - name: Update tools
         run: |
-          # 检查是否已有这些工具（去重）
           if grep -q "Krea AI" index.html; then
             echo "工具已存在，跳过更新"
             exit 0
           fi
 
-          # 要新增的工具数据
-          TOOLS='
-            { name:"Krea AI", desc:"实时AI图像生成与编辑", url:"https://www.krea.ai", icon:"🎨", tags:["en"], cat:"paint" },
-            { name:"NotebookLM", desc:"Google AI笔记研究助手", url:"https://notebooklm.google", icon:"📝", tags:["en","free"], cat:"search" },
-            { name:"Suno AI", desc:"AI音乐生成", url:"https://suno.com", icon:"🎵", tags:["en"], cat:"audio" },
-            { name:"Perplexity AI", desc:"AI搜索引擎附引用", url:"https://www.perplexity.ai", icon:"🔍", tags:["en","free"], cat:"search" },
-            { name:"Runway Gen-3", desc:"AI文字转高质量视频", url:"https://runwayml.com", icon:"🎬", tags:["en"], cat:"video" },
-            { name:"Cursor IDE", desc:"AI代码编辑器", url:"https://cursor.com", icon:"💻", tags:["en"], cat:"code" },
-            { name:"Gamma", desc:"AI一键生成PPT", url:"https://gamma.app", icon:"📊", tags:["en","free"], cat:"office" },
-            { name:"ElevenLabs", desc:"超逼真AI语音合成", url:"https://elevenlabs.io", icon:"🗣️", tags:["en"], cat:"audio" },
-            { name:"Ideogram", desc:"AI图像生成", url:"https://ideogram.ai", icon:"🖼️", tags:["en","free"], cat:"paint" },
-            { name:"Consensus", desc:"AI学术搜索引擎", url:"https://consensus.app", icon:"🎓", tags:["en"], cat:"search" }'
+          # 用 node 来操作文件，比 sed 可靠得多
+          node -e "
+            const fs = require('fs');
+            let html = fs.readFileSync('index.html', 'utf8');
 
-          # 在 index.html 的 TOOLS_DATA 数组末尾插入新工具
-          # 找到 "];" 并在此之前插入
-          sed -i "/^];$/i\\$TOOLS" index.html
+            const tools = \`
+              { name:\\"Krea AI\\", desc:\\"实时AI图像生成与编辑\\", url:\\"https://www.krea.ai\\", icon:\\"🎨\\", tags:[\\"en\\"], cat:\\"paint\\" },
+              { name:\\"NotebookLM\\", desc:\\"Google AI笔记研究助手\\", url:\\"https://notebooklm.google\\", icon:\\"📝\\", tags:[\\"en\\",\\"free\\"], cat:\\"search\\" },
+              { name:\\"Suno AI\\", desc:\\"AI音乐生成\\", url:\\"https://suno.com\\", icon:\\"🎵\\", tags:[\\"en\\"], cat:\\"audio\\" },
+              { name:\\"Perplexity AI\\", desc:\\"AI搜索引擎附引用\\", url:\\"https://www.perplexity.ai\\", icon:\\"🔍\\", tags:[\\"en\\",\\"free\\"], cat:\\"search\\" },
+              { name:\\"Runway Gen-3\\", desc:\\"AI文字转高质量视频\\", url:\\"https://runwayml.com\\", icon:\\"🎬\\", tags:[\\"en\\"], cat:\\"video\\" },
+              { name:\\"Cursor IDE\\", desc:\\"AI代码编辑器\\", url:\\"https://cursor.com\\", icon:\\"💻\\", tags:[\\"en\\"], cat:\\"code\\" },
+              { name:\\"Gamma\\", desc:\\"AI一键生成PPT\\", url:\\"https://gamma.app\\", icon:\\"📊\\", tags:[\\"en\\",\\"free\\"], cat:\\"office\\" },
+              { name:\\"ElevenLabs\\", desc:\\"超逼真AI语音合成\\", url:\\"https://elevenlabs.io\\", icon:\\"🗣️\\", tags:[\\"en\\"], cat:\\"audio\\" },
+              { name:\\"Ideogram\\", desc:\\"AI图像生成\\", url:\\"https://ideogram.ai\\", icon:\\"🖼️\\", tags:[\\"en\\",\\"free\\"], cat:\\"paint\\" },
+              { name:\\"Consensus\\", desc:\\"AI学术搜索引擎\\", url:\\"https://consensus.app\\", icon:\\"🎓\\", tags:[\\"en\\"], cat:\\"search\\" }
+            \`.trim();
 
-          # 配置 Git 并提交
+            // 找到 ]; 前面插入
+            html = html.replace(/\];\s*\n\s*const CATEGORIES/, tools + ',\n];\n\nconst CATEGORIES');
+            fs.writeFileSync('index.html', html);
+            console.log('✅ 已写入 index.html');
+          "
+
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add index.html
