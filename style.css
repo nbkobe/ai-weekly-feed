@@ -296,3 +296,54 @@ section h2 {
     color: white;
     border-color: transparent;
 }
+
+/* ===== 聊天输入框样式 ===== */
+.chat-input-area {
+    display: flex;
+    gap: 12px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 14px 18px;
+    border: 1px solid rgba(147, 51, 234, 0.3);
+    border-radius: 10px;
+    background: rgba(30, 30, 30, 0.85);
+    color: #e0e0e0;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.chat-input:focus {
+    border-color: #9333ea;
+    box-shadow: 0 0 12px rgba(147, 51, 234, 0.2);
+}
+
+.chat-input::placeholder {
+    color: #888;
+}
+
+.chat-input-area .btn-primary {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #9333ea, #7c3aed);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.chat-input-area .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4);
+}
+
+.chat-input-area .btn-primary:active {
+    transform: translateY(0);
+}
