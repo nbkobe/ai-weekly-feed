@@ -26,6 +26,7 @@ const tools = [
     { name: "美图AI", desc: "国产AI设计工具，一键抠图/扩图/风格转换", icon: "fas fa-wand-magic-sparkles", color: "#fd79a8", category: "design", tag: "设计", url: "https://www.meitu.com", rating: "⭐ 4.5" },
     { name: "Canva AI", desc: "在线设计平台，AI辅助设计海报/Logo/社交媒体图", icon: "fas fa-pen-nib", color: "#00cec9", category: "design", tag: "设计", url: "https://canva.com", rating: "⭐ 4.7" },
     { name: "Remove.bg", desc: "AI一键去除图片背景，3秒出结果", icon: "fas fa-eraser", color: "#0984e3", category: "design", tag: "设计", url: "https://remove.bg", rating: "⭐ 4.6" },
+    ]
     { name: "Figma AI", desc: "设计工具巨头Figma内置AI，自动布局/生成组件", icon: "fas fa-vector-square", color: "#a29bfe", category: "design", tag: "设计", url: "https://figma.com", rating: "⭐ 4.7" },
     // ====== AI 资讯数据（6条） ======
 const newsData = [
