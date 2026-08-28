@@ -1,114 +1,201 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 导航站 - 发现最好用的AI工具</title>
+    <title>AI Weekly Feed - 每周精选AI工具与资讯</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- 粒子背景 -->
-    <canvas id="particles"></canvas>
-    
-    <!-- 鼠标跟随光效 -->
-    <div class="cursor-glow" id="cursorGlow"></div>
-
     <!-- 导航栏 -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="logo">
-                <span class="logo-icon">⚡</span>
-                <span class="logo-text">AI<span class="highlight">导航站</span></span>
-            </div>
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="搜索AI工具..." oninput="filterTools()">
-            </div>
-            <div class="nav-links">
-                <a href="#tools" class="nav-link">工具</a>
-                <a href="#categories" class="nav-link">分类</a>
-                <a href="javascript:void(0)" class="nav-link" onclick="randomPick()">🎲 试试这个</a>
-            </div>
+            <a href="#" class="nav-brand">
+                <span class="brand-icon">&#9733;</span>
+                <span class="brand-text">AI Weekly Feed</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" class="nav-link active" data-section="home">首页</a></li>
+                <li><a href="#tools" class="nav-link" data-section="tools">AI工具</a></li>
+                <li><a href="#news" class="nav-link" data-section="news">AI资讯</a></li>
+                <li><a href="#weekly" class="nav-link" data-section="weekly">每周精选</a></li>
+                <li><a href="#reviews" class="nav-link" data-section="reviews">深度评测</a></li>
+                <li><a href="#chat" class="nav-link" data-section="chat">AI助手</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="切换菜单">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
-    <!-- Hero区域 -->
-    <section class="hero">
+    <!-- 首页横幅 -->
+    <section id="home" class="hero">
+        <div class="hero-bg"></div>
         <div class="hero-content">
-            <h1 class="hero-title">
-                <span class="title-line">发现最好用的</span>
-                <span class="title-line gradient-text">AI 工具</span>
-            </h1>
-            <p class="hero-subtitle">精选全球优质AI工具，助你效率翻倍</p>
+            <h1 class="hero-title">探索 AI 的无限可能</h1>
+            <p class="hero-subtitle">每周精选最实用的 AI 工具、最新资讯与深度评测，助你高效驾驭人工智能浪潮</p>
+            <div class="hero-actions">
+                <a href="#tools" class="btn btn-primary">浏览 AI 工具</a>
+                <a href="#news" class="btn btn-outline">查看最新资讯</a>
+            </div>
             <div class="hero-stats">
                 <div class="stat-item">
-                    <span class="stat-number" data-target="50">0</span>+
-                    <span class="stat-label">精选工具</span>
+                    <span class="stat-number" id="statTools">0</span>
+                    <span class="stat-label">AI 工具</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number" data-target="12">0</span>
-                    <span class="stat-label">工具分类</span>
+                    <span class="stat-number" id="statNews">0</span>
+                    <span class="stat-label">资讯文章</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number" data-target="100">0</span>%
-                    <span class="stat-label">免费可用</span>
+                    <span class="stat-number" id="statReviews">0</span>
+                    <span class="stat-label">深度评测</span>
                 </div>
-            </div>
-        </div>
-        <div class="hero-visual">
-            <div class="floating-card fc1"><i class="fas fa-robot"></i></div>
-            <div class="floating-card fc2"><i class="fas fa-brain"></i></div>
-            <div class="floating-card fc3"><i class="fas fa-wand-magic-sparkles"></i></div>
-            <div class="floating-card fc4"><i class="fas fa-image"></i></div>
-            <div class="floating-card fc5"><i class="fas fa-code"></i></div>
-        </div>
-    </section>
-
-    <!-- 分类标签 -->
-    <section class="categories" id="categories">
-        <div class="container">
-            <div class="category-tabs">
-                <button class="tab-btn active" onclick="filterCategory('all')">🔥 全部</button>
-                <button class="tab-btn" onclick="filterCategory('chat')">💬 对话</button>
-                <button class="tab-btn" onclick="filterCategory('image')">🎨 图像</button>
-                <button class="tab-btn" onclick="filterCategory('video')">🎬 视频</button>
-                <button class="tab-btn" onclick="filterCategory('audio')">🎵 音频</button>
-                <button class="tab-btn" onclick="filterCategory('code')">💻 编程</button>
-                <button class="tab-btn" onclick="filterCategory('writing')">✍️ 写作</button>
-                <button class="tab-btn" onclick="filterCategory('office')">📊 办公</button>
-                <button class="tab-btn" onclick="filterCategory('design')">🎯 设计</button>
             </div>
         </div>
     </section>
 
-    <!-- 工具卡片网格 -->
-    <section class="tools-section" id="tools">
+    <!-- AI工具库 -->
+    <section id="tools" class="section">
         <div class="container">
-            <div class="tools-grid" id="toolsGrid"></div>
+            <div class="section-header">
+                <h2 class="section-title">AI 工具库</h2>
+                <p class="section-desc">发现最新、最实用的 AI 工具，按类别筛选，找到最适合你的那一个</p>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="toolSearch" placeholder="搜索 AI 工具名称或描述..." class="search-input">
+                <div class="filter-tags" id="toolFilters">
+                    <button class="filter-tag active" data-category="all">全部</button>
+                </div>
+            </div>
+            <div class="tools-grid" id="toolsGrid">
+                <!-- 工具卡片由 JS 动态生成 -->
+            </div>
         </div>
     </section>
 
-    <!-- 随机推荐弹窗 -->
-    <div class="modal-overlay" id="randomModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">&times;</button>
-            <div class="modal-icon" id="modalIcon"></div>
-            <h2 id="modalTitle"></h2>
-            <p id="modalDesc"></p>
-            <a id="modalLink" href="#" target="_blank" class="modal-btn">立即使用 →</a>
-            <button class="modal-btn secondary" onclick="randomPick()">🎲 换一个</button>
+    <!-- AI资讯 -->
+    <section id="news" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">AI 最新资讯</h2>
+                <p class="section-desc">紧跟 AI 领域前沿动态，掌握最新技术突破与行业趋势</p>
+            </div>
+            <div class="news-grid" id="newsGrid">
+                <!-- 资讯卡片由 JS 动态生成 -->
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- 每周精选 -->
+    <section id="weekly" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">每周精选榜单</h2>
+                <p class="section-desc">编辑精选的最佳 AI 工具与资源，每周更新</p>
+            </div>
+            <div class="weekly-list" id="weeklyList">
+                <!-- 精选列表由 JS 动态生成 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 深度评测 -->
+    <section id="reviews" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">深度评测</h2>
+                <p class="section-desc">对热门 AI 工具进行全方位对比评测，帮你做出明智选择</p>
+            </div>
+            <div class="reviews-grid" id="reviewsGrid">
+                <!-- 评测卡片由 JS 动态生成 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- AI助手聊天 -->
+    <section id="chat" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">AI 助手</h2>
+                <p class="section-desc">向 AI 助手提问，获取 AI 工具推荐、使用技巧与最新资讯</p>
+            </div>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-message bot">
+                        <div class="chat-avatar bot-avatar">&#9733;</div>
+                        <div class="chat-bubble">
+                            <p>你好！我是 AI 助手，可以帮你：</p>
+                            <ul>
+                                <li>推荐适合的 AI 工具</li>
+                                <li>介绍 AI 工具的使用方法</li>
+                                <li>解答 AI 相关技术问题</li>
+                                <li>分享最新的 AI 资讯动态</li>
+                            </ul>
+                            <p>请直接输入你的问题吧！</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="输入你的问题..." class="chat-input">
+                    <button id="chatSend" class="btn btn-primary">发送</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 提示词模板 -->
+    <section id="prompts" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">提示词模板库</h2>
+                <p class="section-desc">精选高质量 AI 提示词，复制即用，提升你的 AI 使用效率</p>
+            </div>
+            <div class="prompts-grid" id="promptsGrid">
+                <!-- 提示词卡片由 JS 动态生成 -->
+            </div>
+        </div>
+    </section>
 
     <!-- 页脚 -->
     <footer class="footer">
         <div class="container">
-            <p>⚡ AI导航站 — 精选全球优质AI工具</p>
-            <p class="footer-sub">每周更新 · 持续收录最新AI神器</p>
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="brand-icon">&#9733;</span>
+                    <span>AI Weekly Feed</span>
+                    <p>每周精选 AI 工具、资讯与评测，助你驾驭智能浪潮</p>
+                </div>
+                <div class="footer-links">
+                    <h4>快速导航</h4>
+                    <a href="#home">首页</a>
+                    <a href="#tools">AI工具</a>
+                    <a href="#news">AI资讯</a>
+                    <a href="#weekly">每周精选</a>
+                    <a href="#reviews">深度评测</a>
+                </div>
+                <div class="footer-links">
+                    <h4>更多</h4>
+                    <a href="#chat">AI助手</a>
+                    <a href="#prompts">提示词模板</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AI Weekly Feed. All rights reserved.</p>
+            </div>
         </div>
     </footer>
+
+    <!-- 回到顶部按钮 -->
+    <button class="back-to-top" id="backToTop" aria-label="回到顶部">
+        <span>&#8593;</span>
+    </button>
 
     <script src="script.js"></script>
 </body>
