@@ -254,3 +254,18 @@ const closeBtn = document.querySelector('.close-modal');
 if (closeBtn) {
     closeBtn.addEventListener('click', closeModal);
 }
+// ===== 事件监听绑定 =====
+
+// 1. 搜索框实时过滤
+const searchInput = document.getElementById('toolSearch');
+if (searchInput) {
+    searchInput.addEventListener('input', filterTools);
+}
+
+// 2. 分类按钮点击筛选
+document.querySelectorAll('.filter-tag').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const category = this.getAttribute('data-category');
+        filterCategory(category);
+    });
+});
