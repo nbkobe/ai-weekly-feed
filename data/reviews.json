@@ -1,0 +1,42 @@
+{
+  "reviews": [
+    {
+      "id": 1,
+      "toolId": 2,
+      "toolName": "DeepSeek",
+      "title": "DeepSeek V4 Flash 深度评测：免费模型的天花板",
+      "summary": "经过两周的深度使用，DeepSeek V4 Flash 在代码生成、数学推理和中文理解方面表现优异，完全可以作为日常主力工具使用。",
+      "scores": {
+        "对话能力": 9,
+        "代码能力": 9.5,
+        "推理能力": 9.5,
+        "中文理解": 9,
+        "响应速度": 9,
+        "性价比": 10
+      },
+      "totalScore": 9.3,
+      "verdict": "强烈推荐",
+      "date": "2026-08-25",
+      "author": "AI Weekly 编辑部"
+    },
+    {
+      "id": 2,
+      "toolId": 5,
+      "toolName": "Cursor",
+      "title": "Cursor 深度评测：AI 编程的未来形态",
+      "summary": "Cursor 彻底改变了我的编程方式。项目级上下文理解让 AI 真正理解了你的代码库，不再是逐行补全，而是理解整体架构。",
+      "scores": {
+        "代码补全": 9.5,
+        "上下文理解": 9,
+        "重构能力": 8.5,
+        "速度": 8.5,
+        "稳定性": 8,
+        "性价比": 9
+      },
+      "totalScore": 8.8,
+      "verdict": "推荐",
+      "date": "2026-08-20",
+      "author": "AI Weekly 编辑部"
+    }
+  ]
+}
