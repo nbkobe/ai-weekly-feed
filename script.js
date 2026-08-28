@@ -217,7 +217,8 @@ function initParticles() {
 document.addEventListener('DOMContentLoaded', () => {
     renderTools(tools);
     animateNumbers();
-    initParticles();
+    initParticles(); 
+    renderTools(tools);
 });
 
 // 点击弹窗外部关闭
