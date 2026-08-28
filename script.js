@@ -78,18 +78,18 @@ function filterTools() {
 }
 
 // ===== 分类过滤 =====
-function filterCategory(category, event) {
+// ===== 分类过滤 =====
+function filterCategory(category) {
     // 更新按钮状态
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
+    document.querySelectorAll('.filter-tag').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.filter-tag[data-category="${category}"]`).classList.add('active');
+
     if (category === 'all') {
         renderTools(tools);
     } else {
         renderTools(tools.filter(t => t.category === category));
     }
 }
-
 // ===== 随机推荐 =====
 function randomPick() {
     const tool = tools[Math.floor(Math.random() * tools.length)];
