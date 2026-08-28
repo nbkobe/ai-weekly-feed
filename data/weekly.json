@@ -1,0 +1,21 @@
+{
+  "week": "2026-W34",
+  "dateRange": "2026.08.18 - 2026.08.24",
+  "topTools": [
+    {"rank": 1, "toolId": 2, "reason": "V4 Flash 发布，免费且推理能力超强", "trend": "up"},
+    {"rank": 2, "toolId": 5, "reason": "项目级上下文理解功能大受好评", "trend": "up"},
+    {"rank": 3, "toolId": 1, "reason": "稳定发挥，生态持续扩展", "trend": "same"},
+    {"rank": 4, "toolId": 10, "reason": "Suno V4 音乐质量飞跃", "trend": "up"},
+    {"rank": 5, "toolId": 12, "reason": "K3 开源引发关注", "trend": "new"}
+  ],
+  "topPrompts": [
+    {"rank": 1, "promptId": 3, "reason": "小红书爆款标题模板持续火爆"},
+    {"rank": 2, "promptId": 1, "reason": "万能写作助手使用量突破1.2万"},
+    {"rank": 3, "promptId": 6, "reason": "秋招季面试模拟器需求激增"}
+  ],
+  "highlights": [
+    "本周 DeepSeek V4 Flash 正式发布，Agent 能力大幅提升",
+    "Cursor 项目级上下文理解功能上线",
+    "Kimi K3 开源，2.8万亿参数"
+  ]
+}
