@@ -1,4 +1,33 @@
+<!-- ====== AI 工具箱板块 ====== -->
+<section class="tools-section">
+  <div class="section-header">
+    <h2 class="section-title">AI 工具箱</h2>
+    <p class="section-desc">精选29款实用AI工具，覆盖对话、绘画、视频、写作等全场景</p>
+  </div>
 
+  <!-- 搜索框 -->
+  <div class="search-box">
+    <input type="text" id="searchInput" class="search-input" placeholder="搜索工具名称或描述...">
+    <i class="fas fa-search search-icon"></i>
+  </div>
+
+  <!-- 分类过滤按钮（对应JS中的category） -->
+  <div class="filter-tags">
+    <button class="filter-tag active" data-category="all">全部</button>
+    <button class="filter-tag" data-category="chat">对话</button>
+    <button class="filter-tag" data-category="image">图像</button>
+    <button class="filter-tag" data-category="video">视频</button>
+    <button class="filter-tag" data-category="audio">音频</button>
+    <button class="filter-tag" data-category="coding">代码</button>
+    <button class="filter-tag" data-category="writing">写作</button>
+    <button class="filter-tag" data-category="design">设计</button>
+    <button class="filter-tag" data-category="other">其他</button>
+  </div>
+
+  <!-- 工具卡片容器（JS 会在这里注入29张卡片） -->
+  <div class="tools-grid" id="toolsGrid"></div>
+</section>
+<!-- ====== 工具箱板块结束 ====== -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
