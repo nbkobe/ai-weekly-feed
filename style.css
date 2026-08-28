@@ -1,410 +1,232 @@
-
-// ===== 数据加载 =====
-const DATA_DIR = 'data/';
-
-async function loadJSON(filename) {
-    try {
-        const res = await fetch(DATA_DIR + filename);
-        return await res.json();
-    } catch (err) {
-        console.warn(`加载 ${filename} 失败:`, err);
-        return [];
-    }
+/* ===== 全局样式 ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-// ===== 导航栏 =====
-const navbar = document.getElementById('navbar');
-const navToggle = document.getElementById('navToggle');
-const navLinks = document.getElementById('navLinks');
-const navLinksAll = document.querySelectorAll('.nav-link');
-
-// 滚动效果
-window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 50);
-    document.getElementById('backToTop').classList.toggle('visible', window.scrollY > 500);
-});
-
-// 移动端菜单
-navToggle.addEventListener('click', () => {
-    navLinks.classList.toggle('open');
-});
-
-// 导航链接高亮 + 平滑滚动
-navLinksAll.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const target = document.querySelector(targetId);
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            navLinks.classList.remove('open');
-        }
-        // 高亮当前链接
-        navLinksAll.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-    });
-});
-
-// 滚动监听更新导航高亮
-const sections = document.querySelectorAll('section[id]');
-window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        if (window.scrollY >= sectionTop) {
-            current = section.getAttribute('id');
-        }
-    });
-    navLinksAll.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('data-section') === current) {
-            link.classList.add('active');
-        }
-    });
-});
-
-// 回到顶部
-document.getElementById('backToTop').addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-// ===== 工具库渲染 =====
-async function renderTools() {
-    const tools = await loadJSON('tools.json');
-    const grid = document.getElementById('toolsGrid');
-    const filtersContainer = document.getElementById('toolFilters');
-
-    // 提取所有分类
-    const categories = new Set();
-    tools.forEach(tool => {
-        if (tool.category) categories.add(tool.category);
-    });
-    categories.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.className = 'filter-tag';
-        btn.dataset.category = cat;
-        btn.textContent = cat;
-        filtersContainer.appendChild(btn);
-    });
-
-    // 渲染工具卡片
-    function displayTools(items) {
-        grid.innerHTML = '';
-        if (items.length === 0) {
-            grid.innerHTML = '<div class="loading"><p>没有找到匹配的工具</p></div>';
-            return;
-        }
-        items.forEach(tool => {
-            const card = document.createElement('div');
-            card.className = 'tool-card';
-            card.innerHTML = `
-                <div class="tool-card-header">
-                    <div class="tool-icon">${tool.icon || '\u2726'}</div>
-                    <span class="tool-badge">${tool.category || 'AI工具'}</span>
-                </div>
-                <h3 class="tool-name">${tool.name}</h3>
-                <p class="tool-desc">${tool.description || ''}</p>
-                ${tool.tags ? `<div class="tool-tags">${tool.tags.map(t => `<span class="tool-tag">${t}</span>`).join('')}</div>` : ''}
-                ${tool.url ? `<a href="${tool.url}" target="_blank" class="tool-link">访问网站 \u2192</a>` : ''}
-            `;
-            grid.appendChild(card);
-        });
-    }
-
-    displayTools(tools);
-
-    // 搜索
-    document.getElementById('toolSearch').addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const filtered = tools.filter(tool =>
-            (tool.name && tool.name.toLowerCase().includes(query)) ||
-            (tool.description && tool.description.toLowerCase().includes(query))
-        );
-        displayTools(filtered);
-    });
-
-    // 分类筛选
-    filtersContainer.addEventListener('click', (e) => {
-        if (!e.target.classList.contains('filter-tag')) return;
-        document.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
-        e.target.classList.add('active');
-        const cat = e.target.dataset.category;
-        if (cat === 'all') {
-            displayTools(tools);
-        } else {
-            displayTools(tools.filter(t => t.category === cat));
-        }
-    });
-
-    // 更新统计
-    animateCounter('statTools', tools.length);
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0a0a0f;
+    color: #e0e0e0;
+    line-height: 1.6;
+    overflow-x: hidden;
 }
 
-// ===== 资讯渲染 =====
-async function renderNews() {
-    const news = await loadJSON('news.json');
-    const grid = document.getElementById('newsGrid');
-
-    function displayNews(items) {
-        grid.innerHTML = '';
-        if (items.length === 0) {
-            grid.innerHTML = '<div class="loading"><p>暂无资讯内容</p></div>';
-            return;
-        }
-        items.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'news-card';
-            card.innerHTML = `
-                <div class="news-card-image">
-                    ${item.icon || '\u2726'}
-                    ${item.date ? `<span class="news-card-date">${item.date}</span>` : ''}
-                </div>
-                <div class="news-card-body">
-                    ${item.category ? `<span class="news-card-category">${item.category}</span>` : ''}
-                    <h3 class="news-card-title">${item.title}</h3>
-                    <p class="news-card-excerpt">${item.excerpt || item.description || ''}</p>
-                    ${item.url ? `<a href="${item.url}" target="_blank" class="news-card-link">阅读全文 \u2192</a>` : ''}
-                </div>
-            `;
-            grid.appendChild(card);
-        });
-    }
-
-    displayNews(news);
-    document.getElementById('statNews').textContent = news.length;
+/* ===== 粒子画布 ===== */
+#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
 }
 
-// ===== 每周精选渲染 =====
-async function renderWeekly() {
-    const weekly = await loadJSON('weekly.json');
-    const list = document.getElementById('weeklyList');
-
-    list.innerHTML = '';
-    if (weekly.length === 0) {
-        list.innerHTML = '<div class="loading"><p>暂无精选内容</p></div>';
-        return;
-    }
-    weekly.forEach((item, index) => {
-        const el = document.createElement('div');
-        el.className = 'weekly-item';
-        el.innerHTML = `
-            <span class="weekly-rank">${index + 1}</span>
-            <div class="weekly-content">
-                <h3 class="weekly-title">${item.title}</h3>
-                <p class="weekly-desc">${item.description || ''}</p>
-                <div class="weekly-meta">
-                    ${item.category ? `<span>${item.category}</span>` : ''}
-                    ${item.date ? `<span>${item.date}</span>` : ''}
-                    ${item.author ? `<span>${item.author}</span>` : ''}
-                </div>
-            </div>
-            ${item.url ? `<a href="${item.url}" target="_blank" class="btn btn-outline" style="padding:8px 16px;font-size:0.85rem;">查看</a>` : ''}
-        `;
-        list.appendChild(el);
-    });
+/* ===== 导航栏 ===== */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(10, 10, 15, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-// ===== 深度评测渲染 =====
-async function renderReviews() {
-    const reviews = await loadJSON('reviews.json');
-    const grid = document.getElementById('reviewsGrid');
-
-    grid.innerHTML = '';
-    if (reviews.length === 0) {
-        grid.innerHTML = '<div class="loading"><p>暂无评测内容</p></div>';
-        return;
-    }
-    reviews.forEach(review => {
-        const card = document.createElement('div');
-        card.className = 'review-card';
-        card.innerHTML = `
-            <div class="review-header">
-                <div class="review-icon">${review.icon || '\u2726'}</div>
-                <div>
-                    <h3 class="review-title">${review.title}</h3>
-                    <p class="review-subtitle">${review.subtitle || ''}</p>
-                </div>
-            </div>
-            <div class="review-score">
-                ${review.scores ? Object.entries(review.scores).map(([k, v]) => `
-                    <div class="score-item">
-                        <span class="score-value">${v}</span>
-                        <span class="score-label">${k}</span>
-                    </div>
-                `).join('') : ''}
-            </div>
-            ${review.pros || review.cons ? `
-                <div class="review-pros-cons">
-                    ${review.pros ? `
-                        <div class="pros">
-                            <h4>优点</h4>
-                            <ul>${review.pros.map(p => `<li>${p}</li>`).join('')}</ul>
-                        </div>
-                    ` : ''}
-                    ${review.cons ? `
-                        <div class="cons">
-                            <h4>缺点</h4>
-                            <ul>${review.cons.map(c => `<li>${c}</li>`).join('')}</ul>
-                        </div>
-                    ` : ''}
-                </div>
-            ` : ''}
-            <p style="color:var(--text-muted);font-size:0.95rem;line-height:1.6;">${review.summary || ''}</p>
-            ${review.url ? `<a href="${review.url}" target="_blank" class="tool-link" style="margin-top:12px;display:inline-flex;">阅读全文 \u2192</a>` : ''}
-        `;
-        grid.appendChild(card);
-    });
-
-    document.getElementById('statReviews').textContent = reviews.length;
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
 }
 
-// ===== 提示词模板渲染 =====
-async function renderPrompts() {
-    const prompts = await loadJSON('prompts.json');
-    const grid = document.getElementById('promptsGrid');
-
-    grid.innerHTML = '';
-    if (prompts.length === 0) {
-        grid.innerHTML = '<div class="loading"><p>暂无提示词内容</p></div>';
-        return;
-    }
-    prompts.forEach((prompt, index) => {
-        const card = document.createElement('div');
-        card.className = 'prompt-card';
-        card.innerHTML = `
-            <button class="copy-btn" data-index="${index}">复制</button>
-            <div class="prompt-header">
-                ${prompt.category ? `<span class="prompt-category">${prompt.category}</span>` : ''}
-            </div>
-            <h3 class="prompt-title">${prompt.title}</h3>
-            <div class="prompt-text" id="prompt-${index}">${prompt.text}</div>
-        `;
-        grid.appendChild(card);
-    });
-
-    // 复制功能
-    grid.querySelectorAll('.copy-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const index = btn.dataset.index;
-            const text = document.getElementById(`prompt-${index}`).textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                btn.textContent = '已复制!';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = '复制';
-                    btn.classList.remove('copied');
-                }, 2000);
-            });
-        });
-    });
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 700;
 }
 
-// ===== AI 聊天 =====
-const chatMessages = document.getElementById('chatMessages');
-const chatInput = document.getElementById('chatInput');
-const chatSend = document.getElementById('chatSend');
-
-function addMessage(text, isUser = false) {
-    const msg = document.createElement('div');
-    msg.className = `chat-message ${isUser ? 'user' : 'bot'}`;
-    msg.innerHTML = `
-        <div class="chat-avatar ${isUser ? 'user-avatar' : 'bot-avatar'}">${isUser ? '\u2726' : '\u2726'}</div>
-        <div class="chat-bubble"><p>${text}</p></div>
-    `;
-    chatMessages.appendChild(msg);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+.brand-icon {
+    color: #9333ea;
 }
 
-function addLoadingMessage() {
-    const msg = document.createElement('div');
-    msg.className = 'chat-message bot';
-    msg.id = 'loading-msg';
-    msg.innerHTML = `
-        <div class="chat-avatar bot-avatar">\u2726</div>
-        <div class="chat-bubble"><p>思考中...</p></div>
-    `;
-    chatMessages.appendChild(msg);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
 }
 
-function removeLoadingMessage() {
-    const el = document.getElementById('loading-msg');
-    if (el) el.remove();
+.nav-link {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+    cursor: pointer;
 }
 
-async function sendChat() {
-    const text = chatInput.value.trim();
-    if (!text) return;
-
-    addMessage(text, true);
-    chatInput.value = '';
-    addLoadingMessage();
-
-    try {
-        // 尝试调用后端 API
-        const res = await fetch('/api/ai-chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text })
-        });
-        const data = await res.json();
-        removeLoadingMessage();
-        if (data.reply) {
-            addMessage(data.reply);
-        } else {
-            addMessage('抱歉，暂时无法回复。请配置 DeepSeek API Key 后使用 AI 聊天功能。');
-        }
-    } catch (err) {
-        removeLoadingMessage();
-        // 离线模式：基于关键词的简单回复
-        const reply = getOfflineReply(text);
-        addMessage(reply);
-    }
+.nav-link:hover,
+.nav-link.active {
+    color: #fff;
 }
 
-function getOfflineReply(query) {
-    const q = query.toLowerCase();
-    if (q.includes('写作') || q.includes('文案')) {
-        return '推荐你试试 ChatGPT 或 Claude，它们在写作辅助方面表现出色。你也可以查看我们的"提示词模板库"板块，里面有专门的写作类提示词。';
-    } else if (q.includes('画图') || q.includes('图像') || q.includes('设计')) {
-        return 'AI 绘画工具推荐：Midjourney（高质量艺术图）、DALL-E 3（与 ChatGPT 集成）、Stable Diffusion（开源可本地部署）。你可以去"AI工具"板块查看详细信息。';
-    } else if (q.includes('编程') || q.includes('代码')) {
-        return '编程辅助推荐：GitHub Copilot（代码补全）、Cursor（AI 编辑器）、ChatGPT（代码调试与生成）。这些工具能大幅提升开发效率。';
-    } else if (q.includes('视频') || q.includes('剪辑')) {
-        return 'AI 视频工具推荐：Runway ML（视频生成与编辑）、Pika（文本转视频）、Sora（OpenAI 的视频生成模型）。这些是目前的热门选择。';
-    } else if (q.includes('你好') || q.includes('hello') || q.includes('hi')) {
-        return '你好！很高兴为你服务。我可以帮你推荐 AI 工具、解答使用问题、分享最新资讯。有什么我可以帮你的吗？';
-    } else {
-        return '感谢你的提问！我目前处于离线模式，只能提供有限的回答。建议你配置 DeepSeek API Key 来启用完整的 AI 聊天功能。你也可以浏览我们网站上的 AI 工具库、资讯和评测板块获取信息。';
-    }
+/* ===== 英雄区域 ===== */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 20px 60px;
+    position: relative;
+    z-index: 1;
 }
 
-chatSend.addEventListener('click', sendChat);
-chatInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendChat();
-});
-
-// ===== 数字动画 =====
-function animateCounter(id, target) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    let current = 0;
-    const step = Math.max(1, Math.floor(target / 30));
-    const timer = setInterval(() => {
-        current += step;
-        if (current >= target) {
-            current = target;
-            clearInterval(timer);
-        }
-        el.textContent = current;
-    }, 30);
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #a78bfa, #9333ea);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
 }
 
-// ===== 初始化 =====
-document.addEventListener('DOMContentLoaded', () => {
-    renderTools();
-    renderNews();
-    renderWeekly();
-    renderReviews();
-    renderPrompts();
-});
+.hero p {
+    font-size: 1.1rem;
+    color: #888;
+    max-width: 600px;
+    margin-bottom: 30px;
+}
+
+/* ===== 数据卡片 ===== */
+.stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #a78bfa;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* ===== 区块通用 ===== */
+section {
+    position: relative;
+    z-index: 1;
+    padding: 80px 20px;
+}
+
+section h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 40px;
+    color: #fff;
+}
+
+/* ===== 工具网格 ===== */
+.tools-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.tool-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.tool-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(147, 51, 234, 0.2);
+}
+
+.tool-card h3 {
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.tool-card p {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+/* ===== 分类筛选 ===== */
+.filter-bar {
+    max-width: 1200px;
+    margin: 0 auto 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.filter-btn {
+    padding: 8px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    background: transparent;
+    color: #aaa;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: #9333ea;
+    color: #fff;
+    border-color: #9333ea;
+}
+
+/* ===== 回到顶部 ===== */
+#backToTop {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #9333ea;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+    transition: transform 0.3s;
+}
+
+#backToTop.visible {
+    display: flex;
+}
+
+#backToTop:hover {
+    transform: scale(1.1);
+}
