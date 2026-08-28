@@ -68,7 +68,7 @@ function renderTools(filteredTools) {
 
 // ===== 搜索过滤 =====
 function filterTools() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
+    const query = document.getElementById('toolSearch').value.toLowerCase();
     const filtered = tools.filter(t => 
         t.name.toLowerCase().includes(query) || 
         t.desc.toLowerCase().includes(query) ||
