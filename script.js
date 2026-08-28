@@ -78,7 +78,7 @@ function filterTools() {
 }
 
 // ===== 分类过滤 =====
-function filterCategory(category) {
+function filterCategory(category, event) {
     // 更新按钮状态
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     event.target.classList.add('active');
