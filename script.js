@@ -227,3 +227,30 @@ if (modal) {
         if (e.target === e.currentTarget) closeModal();
     });
 }
+// ===== 事件监听绑定（替代 HTML 里的 onclick / oninput） =====
+
+// 1. 搜索框实时过滤
+const searchInput = document.getElementById('toolSearch');
+if (searchInput) {
+    searchInput.addEventListener('input', filterTools);
+}
+
+// 2. 分类按钮点击筛选
+document.querySelectorAll('.filter-tag').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const category = this.getAttribute('data-category');
+        filterCategory(category);
+    });
+});
+
+// 3. 随机推荐按钮（请确保你的按钮 class 是 random-btn）
+const randomBtn = document.querySelector('.random-btn');
+if (randomBtn) {
+    randomBtn.addEventListener('click', randomPick);
+}
+
+// 4. 弹窗内的关闭按钮（请确保你的关闭图标 class 是 close-modal）
+const closeBtn = document.querySelector('.close-modal');
+if (closeBtn) {
+    closeBtn.addEventListener('click', closeModal);
+}
