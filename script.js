@@ -456,3 +456,6 @@ function renderReviews() {
     </div>
   `).join('');
 }
+renderNews();         // 渲染AI资讯
+renderRankings();     // 渲染每周精选
+renderReviews();      // 渲染深度评测
