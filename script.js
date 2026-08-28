@@ -256,3 +256,17 @@ if (closeBtn) {
     closeBtn.addEventListener('click', closeModal);
 }
 // ===== 事件监听绑定 =====
+// ===== 页面初始化调用 =====
+window.addEventListener('DOMContentLoaded', () => {
+    // 1. 渲染所有板块内容
+    renderTools(tools);      // 渲染工具卡片
+    
+    // 如果你的 script.js 里还有其他渲染函数，也在这里一并调用：
+    // renderNews();         // 渲染AI资讯（如果代码里有这个函数）
+    // renderRankings();     // 渲染每周精选
+    // renderReviews();      // 渲染深度评测
+
+    // 2. 启动视觉效果
+    initParticles();
+    animateNumbers();
+});
