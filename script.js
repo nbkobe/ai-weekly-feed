@@ -27,6 +27,127 @@ const tools = [
     { name: "Canva AI", desc: "在线设计平台，AI辅助设计海报/Logo/社交媒体图", icon: "fas fa-pen-nib", color: "#00cec9", category: "design", tag: "设计", url: "https://canva.com", rating: "⭐ 4.7" },
     { name: "Remove.bg", desc: "AI一键去除图片背景，3秒出结果", icon: "fas fa-eraser", color: "#0984e3", category: "design", tag: "设计", url: "https://remove.bg", rating: "⭐ 4.6" },
     { name: "Figma AI", desc: "设计工具巨头Figma内置AI，自动布局/生成组件", icon: "fas fa-vector-square", color: "#a29bfe", category: "design", tag: "设计", url: "https://figma.com", rating: "⭐ 4.7" },
+    // ====== AI 资讯数据（6条） ======
+const newsData = [
+  {
+    id: 1,
+    title: "谷歌 Gemini 3.8 Flash 预览版曝光，性能"明显提升"",
+    summary: "谷歌员工已在内部平台测试下一代 Flash 模型，速度更快、成本更低，CEO 皮查伊称力争每月发布一款新模型。",
+    date: "2026-08-28",
+    tag: "模型动态",
+    icon: "fas fa-bolt",
+    color: "#4285f4",
+    url: "https://www.itbear.com.cn/html/2026-08/1527536.html"
+  },
+  {
+    id: 2,
+    title: "中国大模型日均词元调用量突破500万亿",
+    summary: "央视报道，截至2026年6月，国内AI日均词元调用量突破500万亿，两年实现千倍增长，竞争焦点转向智能体落地。",
+    date: "2026-08-27",
+    tag: "行业动态",
+    icon: "fas fa-chart-line",
+    color: "#e8453c",
+    url: "https://www.toutiao.com/article/7678641236185580058/"
+  },
+  {
+    id: 3,
+    title: "OpenAI 正式关停 Sora，消费级AI视频路线熄火",
+    summary: "Sora App已于4月底下线，API端计划9月下线。国产可灵、即梦、Veo等趁势崛起，抢占视频生成市场。",
+    date: "2026-08-24",
+    tag: "产品动态",
+    icon: "fas fa-film",
+    color: "#8b5cf6",
+    url: "https://www.citnews.com.cn/news/220966"
+  },
+  {
+    id: 4,
+    title: "阿里云百炼下调 Qwen3.8-Flash 计费单价",
+    summary: "输入单价从1元/次降至0.8元/次，输出从3元/次降至2.7元/次，整体成本降低10%，覆盖所有用户。",
+    date: "2026-08-27",
+    tag: "价格调整",
+    icon: "fas fa-tags",
+    color: "#f59e0b",
+    url: "https://www.itbear.com.cn/html/2026-08/1526184.html"
+  },
+  {
+    id: 5,
+    title: "DeepSeek 文本请求市场份额连续两周超越谷歌",
+    summary: "OpenRouter数据显示，DeepSeek以27.1%的文本请求份额位居第一，谷歌23.8%紧随其后，OpenAI排名第三。",
+    date: "2026-08-18",
+    tag: "市场份额",
+    icon: "fas fa-trophy",
+    color: "#10b981",
+    url: "https://mp.weixin.qq.com/s"
+  },
+  {
+    id: 6,
+    title: "Anthropic 发布模型硬件标准研究预览版",
+    summary: "提出适配大模型推理的硬件接口规范，推动行业软硬件适配标准化，降低不同厂商硬件迁移成本。",
+    date: "2026-08-28",
+    tag: "技术进展",
+    icon: "fas fa-microchip",
+    color: "#ec4899",
+    url: "https://www.anthropic.com"
+  }
+];
+
+// ====== 每周精选榜单数据（10个） ======
+const rankingsData = [
+  { rank: 1, name: "ChatGPT", desc: "综合能力最强，全球使用份额超64%", icon: "fas fa-robot", color: "#10a37f", score: 98, trend: "up" },
+  { rank: 2, name: "豆包", desc: "国内月活3.45亿，中文理解与响应速度顶尖", icon: "fas fa-comment-dots", color: "#e8453c", score: 96, trend: "up" },
+  { rank: 3, name: "Claude", desc: "长文本与低幻觉率之王，学术/法务首选", icon: "fas fa-brain", color: "#7c3aed", score: 95, trend: "stable" },
+  { rank: 4, name: "DeepSeek", desc: "开源免费，代码与数学推理国内第一", icon: "fas fa-code", color: "#f59e0b", score: 93, trend: "up" },
+  { rank: 5, name: "Gemini", desc: "多模态理解最强，Google生态深度整合", icon: "fas fa-globe", color: "#4285f4", score: 91, trend: "down" },
+  { rank: 6, name: "Midjourney", desc: "AI绘画画质天花板，艺术表现力无人能及", icon: "fas fa-palette", color: "#ec4899", score: 90, trend: "stable" },
+  { rank: 7, name: "Kimi", desc: "超长上下文专家，支持100-200万token", icon: "fas fa-book-open", color: "#06b6d4", score: 88, trend: "up" },
+  { rank: 8, name: "可灵AI", desc: "国产视频顶流，6月全球用户破1亿", icon: "fas fa-video", color: "#8b5cf6", score: 86, trend: "up" },
+  { rank: 9, name: "通义千问", desc: "中文公文写作强，API成本低廉", icon: "fas fa-feather-alt", color: "#f97316", score: 85, trend: "stable" },
+  { rank: 10, name: "Microsoft Copilot", desc: "Office全家桶深度集成，职场办公利器", icon: "fas fa-file-word", color: "#0078d4", score: 84, trend: "down" }
+];
+
+// ====== 深度评测数据（4篇） ======
+const reviewsData = [
+  {
+    id: 1,
+    title: "ChatGPT vs 豆包 vs DeepSeek：谁写开题报告最靠谱？",
+    summary: "从生成速度、逻辑框架、文献真实性、AIGC风险四个维度实测三款大模型，结果出乎意料。",
+    date: "2026-08-26",
+    image: "📊",
+    color: "#3b82f6",
+    tags: ["对话模型", "横评", "写作"],
+    url: "https://blog.csdn.net/wxjuliu/article/details/164083114"
+  },
+  {
+    id: 2,
+    title: "AI视频生成横评：Sora退场后，谁是新的视频之王？",
+    summary: "Sora正式下线，可灵、即梦、Runway、Veo四大工具全面对比，从画质、速度、可控性逐一实测。",
+    date: "2026-08-24",
+    image: "🎬",
+    color: "#8b5cf6",
+    tags: ["视频生成", "横评", "评测"],
+    url: "https://www.citnews.com.cn/news/220966"
+  },
+  {
+    id: 3,
+    title: "2026年主流大模型能力全景对比",
+    summary: "中文理解、逻辑推理、代码能力、多模态、幻觉率、响应速度六大维度全面评分，一文选对模型。",
+    date: "2026-07-24",
+    image: "🔬",
+    color: "#10b981",
+    tags: ["大模型", "对比", "选购指南"],
+    url: "https://www.toutiao.com/article/7677824993375568407/"
+  },
+  {
+    id: 4,
+    title: "2026 AI绘画工具真实感对比：Midjourney vs GPT Image vs FLUX",
+    summary: "光影质感、人物写真、商业广告三大场景实测，谁的画面最接近真实摄影？",
+    date: "2026-07-14",
+    image: "🎨",
+    color: "#ec4899",
+    tags: ["AI绘画", "横评", "画质对比"],
+    url: "#"
+  }
+];
 ];
 
 // ===== 渲染工具卡片 =====
@@ -141,9 +262,6 @@ function animateNumbers() {
         const increment = target / 60;
         const timer = setInterval(() => {
             current += increment;
-            if (current >= target) {
-                current = target;
-                clearInterval(timer);
             }
             el.textContent = Math.floor(current);
         }, 20);
@@ -270,3 +388,71 @@ window.addEventListener('DOMContentLoaded', () => {
     initParticles();
     animateNumbers();
 });
+// ====== 渲染 AI 资讯 ======
+function renderNews() {
+  const container = document.getElementById('newsGrid');
+  if (!container) return;
+  container.innerHTML = newsData.map(news => `
+    <div class="news-card">
+      <div class="news-icon" style="background:${news.color}22;color:${news.color}">
+        <i class="${news.icon}"></i>
+      </div>
+      <div class="news-content">
+        <div class="news-meta">
+          <span class="news-tag" style="color:${news.color}">${news.tag}</span>
+          <span class="news-date">${news.date}</span>
+        </div>
+        <h3 class="news-title">${news.title}</h3>
+        <p class="news-summary">${news.summary}</p>
+        <a href="${news.url}" target="_blank" class="news-link">阅读全文 <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ====== 渲染每周精选榜单 ======
+function renderRankings() {
+  const container = document.getElementById('rankingsList');
+  if (!container) return;
+  container.innerHTML = rankingsData.map((item, index) => `
+    <div class="ranking-item">
+      <div class="ranking-rank ${index < 3 ? 'top3' : ''}">${item.rank}</div>
+      <div class="ranking-icon" style="background:${item.color}22;color:${item.color}">
+        <i class="${item.icon}"></i>
+      </div>
+      <div class="ranking-info">
+        <h4 class="ranking-name">${item.name}</h4>
+        <p class="ranking-desc">${item.desc}</p>
+      </div>
+      <div class="ranking-score">
+        <div class="score-bar"><div class="score-fill" style="width:${item.score}%;background:${item.color}"></div></div>
+        <span class="score-value">${item.score}</span>
+        <span class="score-trend ${item.trend}">${item.trend === 'up' ? '↑' : item.trend === 'down' ? '↓' : '—'}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ====== 渲染深度评测 ======
+function renderReviews() {
+  const container = document.getElementById('reviewsGrid');
+  if (!container) return;
+  container.innerHTML = reviewsData.map(review => `
+    <div class="review-card">
+      <div class="review-image" style="background:linear-gradient(135deg,${review.color}15,${review.color}05)">
+        <span class="review-emoji">${review.image}</span>
+      </div>
+      <div class="review-body">
+        <div class="review-tags">
+          ${review.tags.map(t => `<span class="review-tag">${t}</span>`).join('')}
+        </div>
+        <h3 class="review-title">${review.title}</h3>
+        <p class="review-summary">${review.summary}</p>
+        <div class="review-footer">
+          <span class="review-date">${review.date}</span>
+          <a href="${review.url}" target="_blank" class="review-link" style="color:${review.color}">查看评测 <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
