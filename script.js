@@ -221,6 +221,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 点击弹窗外部关闭
-document.getElementById('randomModal').addEventListener('click', (e) => {
-    if (e.target === e.currentTarget) closeModal();
-});
+const modal = document.getElementById('randomModal');
+if (modal) {
+    modal.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeModal();
+    });
+}
